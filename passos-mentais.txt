@@ -1,0 +1,98 @@
+Fluxo Ideal:
+    Infra → Schema → Migração → Dados → Código
+
+### CONFIGURAÇÕES INICIAIS DO PROJETO
+
+    ## INICIALIZAÇÃO DO PROJETO/ARQUITETURA COM FRAMEWORK
+        # INICAR APLICAÇÃO
+    #
+
+    ## INSTALAÇÃO DE DEPENDENCIAS INICIAIS
+        # INSTALAR DEPENDENCIAS DE DESENVOLVIMENTO
+
+        # INSTALAR DEPENDENCIAS LOCAIS
+    #
+
+    ## CRIAR O BANCO DE DADOS
+        # LOCAL, DOCKER OU CLOUD
+
+        # OBTER/CONFIGURAR STRING DE CONEXÃO DO BANCO DE DADOS UTILIZADO
+    #
+
+    ## CONFIGURAR/ARMAZENAR STRING DE CONEXÃO COM BANCO DE DADOS NO .ENV DA APLICAÇÃO
+        # DEFINIR STRING DE CONEXÃO COMO VARIÁVEL DE AMBIENTE NO .ENV
+    #
+
+    ## CONFIGURAÇÃO E DEFINIÇÃO DA ESTRUTURA DO BANCO DE DADOS
+        # RESETAR MIGRATIONS (SE NECESSÁRIO) (APAGA TODA ESTRUTURA PRESENTE NO BANCO DE DADOS)
+
+        # INICIAR ARQUIVO PRISMA DEFININDO PROVEDOR DE BANCO DE DADOS E PASTA DE SAÍDA DAS MIGRATIONS
+
+        # CRIAR OS MODELOS DO SCHEMA QUE O PRISMA IRÁ ENVIAR PARA O BANCO DE DADOS
+
+        # FAZER MIGRATION DEFININDO QUE É DESENVOLVIMENTO E DANDO NOME A ELA
+    #
+
+    ## CONFIGURAÇÃO DO CLIENT PARA CONEXÃO COM BANCO DE DADOS E SUAS INTERAÇÕES (BANCO DE DADOS <-> APLICAÇÃO)
+        # CONFIGURAR O PRISMA CLIENT COMO UMA _LIB
+    #
+
+    ## SUBIR DADOS MOCADOS PARA INICIAR TESTES DE INFORMAÇÕES PARA COMUNICAÇÃO (BANCO DE DADOS <-> APLICAÇÃO)
+        # CRIAR COMANDO SEED NO ARQUIVO DE CONFIGURAÇÃO DO PRISMA
+
+        # RODAR O SEED PARA POPULAR O BANCO DE DADOS
+    #
+
+### GIT & GITHUB
+    ## CONVENTIONAL COMMIT
+        chore: configure project architecture and base structure
+            OU
+        chore: setup base architecture and folder structure
+            OU
+        chore: setup base architecture and folder structure
+            chore é usado para:
+                - Configuração
+                - Infraestrutura
+                - Setup
+                - Arquitetura
+                - Ajustes que não afetam regra de negócio
+
+### LIB'S EXTERNAS PARA AUXILIAR IMPLEMENTAÇÃO DE COMPONENTES
+    ## LIB
+        # SCHADCN UI
+            # INSTALAR LOCALMENTE
+
+### AJUSTES DE ARQUITETURA E CONVENÇÕES DO PROJETO
+            # CONFIGURAR DIRETÓRIOS DOS COMPONENTES E LIBS PARA QUE A APLICAÇÃO ENTENDA QUE NÃO SÃO ROTAS E IGNORE-OS
+
+            # MUDAR CAMINHO DOS DIRETÓRIOS ALTERADOS NO ARQUIVO JSON DE COMPONENTES
+
+### DEFINIR LAYOUT COMO TEMA ESCURO
+    ## SETAR CLASSE DARK NO HTML PRESENTE NO LAYOUT GERAL DO APP
+
+### COMENTIZAÇÃO
+    ## HEADER
+        # UTILIZAR COMPONENTE CARD DO SCHADCN
+            # INSTALAR COMPONENTE
+
+            # RENDERIZAR COMPONENTE
+
+### RENINAR APARÊNCIA DAS FONTES DA APLICAÇÃO
+    ## APLICAR ANTIALIASED NAS FONTES NO ARQUIVO ./APP/GLOBALS.CSS
+
+### GIT & GITHUB
+    ## CONVENTIONAL COMMIT
+        feat: add home page layout structure
+            OU
+        feat: create base UI structure with header and cards
+            OU se tivesse sido um Dashboard
+                feat: implement initial dashboard layout structure
+            OU (geral)
+        feat: add initial UI component structure
+
+
+
+
+
+
+
