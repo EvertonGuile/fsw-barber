@@ -7,10 +7,10 @@ const Header = () => {
     return (
         // Card vem com py e gap
         // CardContent vem com px
-        <Card>
-            <CardContent>
-                <Image src="/next.svg" width={80} height={20} alt="Logo da aplicação" />
-                <Button>
+        <Card className="p-0 rounded-none">
+            <CardContent className="p-5 flex justify-between">
+                <Image src="/Logo.png" width={120} height={18} alt="Logo da aplicação" />
+                <Button size="icon" variant="outline">
                     <MenuIcon />
                 </Button>
             </CardContent>
