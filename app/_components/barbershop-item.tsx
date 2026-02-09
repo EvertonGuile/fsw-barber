@@ -10,25 +10,25 @@ interface IBarbershopItemProps {
 };
 
 const BarbershopItem = ({barbershop}: IBarbershopItemProps) => {
-    return <Card>
-        <CardContent>
+    return <Card className="min-w-[167px] pt-1 pb-0 rounded-2xl">
+        <CardContent className="p-0 px-1 pb-2">
             {/* IMAGEM */}
             <div className="relative h-[159px]">
-                <Image alt={barbershop.name} src={barbershop.imageUrl} fill className="object-cover" />
+                <Image alt={barbershop.name} src={barbershop.imageUrl} fill className="object-cover rounded-t-xl" />
 
-                <Badge className="absolute top-2 left-2">
+                <Badge className="absolute top-2 left-2 space-x-1">
                     <StarIcon size={12} color="#8162FF" className="fill-[#8162FF]" />
 
-                    <p>5.0</p>
+                    <p className="text-xs font-semibold">5.0</p>
                 </Badge>
             </div>
 
             {/* TEXTO */}
-            <div>
-                <h3>{barbershop.name}</h3>
-                <p>{barbershop.address}</p>
+            <div className="py-3 px-1">
+                <h3 className="font-semibold truncate">{barbershop.name}</h3>
+                <p className="text-sm text-gray-400 truncate">{barbershop.address}</p>
 
-                <Button className="w-full">
+                <Button variant="secondary" className="w-full mt-3">
                     Reservar
                 </Button>
             </div>

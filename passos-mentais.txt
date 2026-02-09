@@ -91,7 +91,41 @@ Fluxo Ideal:
         feat: add initial UI component structure
 
 
+### ESTILIZAR APLICAÇÃO
+    ## CONTAINER GERAL
+        ...
 
+    ## COMPONENTES/ELEMENTOS DENTRO DA PÁGINA PRINCIPAL
+        ...
+
+    ## COMPONENTES IMPORTADOS
+        ...
+
+
+### GIT & GITHUB
+    ## CONVENTIONAL COMMIT
+        style: add styling to home layout components
+            OU
+        style: apply responsive styles to header and cards
+            OU
+        style: finalize UI styling for homepage
+            OU
+        style: finalize home page styling
+            OU
+        style: implement full styling for header and barbershop sections
+
+
+
+.... quickSearch
+
+
+### GIT & GITHUB
+    ## CONVENTIONAL COMMIT
+        refactor: extract quick search buttons into reusable component
+            OU
+        refactor: componentize quick search buttons
+            OU
+        refactor: create QuickSearchButtons component
 
 
 

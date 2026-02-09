@@ -17,74 +17,90 @@ const Home = async () => {
     <div>
       <Header />
 
-      <div>
+      <div className="p-5">
         {/* BOAS VINDAS / UserGreeting */}
         <div>
-          <h2>Olá, convidado. Seja bem vindo!</h2>
+          <h2 className="text-xl font-bold">Olá, <span className="text-[#8162FF]">convidado</span>. Seja bem vindo!</h2>
           <p>Domingo, 08 de fevereiro.</p>
         </div>
+
         {/* BUSCA / SEARCH */}
-        <div>
+        <div className="mt-6 flex gap-2">
           <Input placeholder="Digite o que procura..." />
-          <Button>
-            <SearchIcon />
+          <Button className="bg-[#8162FF] text-white">
+            <SearchIcon strokeWidth={3} />
           </Button>
         </div>
+
         {/* BUSCA RÁPIDA / QUICKSEARCH */}
-        <div>
+        <div className="flex gap-3 mt-6 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
           {/* Itens Mocados */}
-          <Button>
+          <Button variant="secondary">
             <Image src="/barba.svg" alt="Ícone Barba" width={16} height={16} />
-            <p>Barba</p>
+            <p className="text-white">Barba</p>
           </Button>
-          <Button>
+          <Button variant="secondary">
             <Image src="/cabelo.svg" alt="Ícone Cabelo" width={16} height={16} />
-            <p>Cabelo</p>
+            <p className="text-white">Cabelo</p>
           </Button>
-          <Button>
+          <Button variant="secondary">
             <Image src="/pezinho.svg" alt="Ícone Pézinho" width={16} height={16} />
-            <p>Pézinho</p>
+            <p className="text-white">Pézinho</p>
           </Button>
-          <Button>
+          <Button variant="secondary">
             <Image src="/sobrancelha.svg" alt="Ícone Sobrancelha" width={16} height={16} />
-            <p>Sobrancelha</p>
+            <p className="text-white">Sobrancelha</p>
           </Button>
-          <Button>
+          <Button variant="secondary">
             <Image src="/hidratacao.svg" alt="Ícone Hidratação" width={9} height={16} />
-            <p>Hidratação</p>
+            <p className="text-white">Hidratação</p>
           </Button>
-          <Button>
+          <Button variant="secondary">
             <Image src="/massagem.svg" alt="Ícone Massagem" width={14} height={16} />
-            <p>Massagem</p>
+            <p className="text-white">Massagem</p>
           </Button>
           {/* Fim itens mocados */}
         </div>
+
         {/* PROMOÇÃO / BANNER PROMOTION */}
-        <div className="relative h-37.5">
-          <Image src="/banner-01.png" alt="Imagem do Banner" fill className="object-cover" />
+        <div className="relative mt-6 h-37.5">
+          <Image src="/banner-01.png" alt="Imagem do Banner" fill className="object-cover rounded-xl" />
         </div>
 
         {/* AGENDAMENTOS / APPOINTMENS */}
         <div>
-          <h2>Agendamentos</h2>
+          <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">Agendamentos</h2>
 
           <BookingItem />
         </div>
 
         {/* BARBEARIAS RECOMENDADAS / TOP BARBERS */}
         <div>
-          <h2>Recomendados</h2>
+          <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">Recomendados</h2>
 
-          {barbershops.map(barbershop =>
-            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
-          )}
+          <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
+            {barbershops.map(barbershop =>
+              <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+            )}
+          </div>
+        </div>
+
+        {/* BARBEARIAS POPULARES / POPULAR BARBERS */}
+        <div>
+          <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">Populares</h2>
+
+          <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
+            {barbershops.map(barbershop =>
+              <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+            )}
+          </div>
         </div>
 
         {/* FOOTER */}
-        <footer>
-          <Card>
+        <footer className="mt-3">
+          <Card className="rounded-none">
             <CardContent>
-              <p>@ 2026 Copyright <span className="font-bold">CapijavaScript</span></p>
+              <p className="text-sm text-gray-400">@ 2026 Copyright <span className="font-bold">CapijavaScript</span></p>
             </CardContent>
           </Card>
         </footer>
