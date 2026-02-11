@@ -90,7 +90,6 @@ Fluxo Ideal:
             OU (geral)
         feat: add initial UI component structure
 
-
 ### ESTILIZAR APLICAÇÃO
     ## CONTAINER GERAL
         ...
@@ -100,7 +99,6 @@ Fluxo Ideal:
 
     ## COMPONENTES IMPORTADOS
         ...
-
 
 ### GIT & GITHUB
     ## CONVENTIONAL COMMIT
@@ -114,9 +112,53 @@ Fluxo Ideal:
             OU
         style: implement full styling for header and barbershop sections
 
+### CRIAR COMPONENTE DE CONSTANTES E/OU ARRAYS
+    ## COMPONENTE CONSTANTE PARA ARMAZENAR UM ARRAY DE OBJETOS
+        ./app/_constants/search.tsx
+            // crio uma interface com as propriedades que quero
+            interface QuickSearchOptions {
+                imageUrl: string,
+                title: string
+            };
 
+            // exporto uma constante que herda a Interface criada acima, onde essa constante recebe um array com varias interfaces(props)
+            export const quickSearchOptions: QuickSearchOptions[] = [
+                {
+                    imageUrl: "/cabelo.svg",
+                    title: "Cabelo"
+                },
+                {
+                    imageUrl: "/barba.svg",
+                    title: "Barba"
+                },
+                {
+                    imageUrl: "/pezinho.svg",
+                    title: "Pezinho"
+                },
+                {
+                    imageUrl: "/sobrancelha.svg",
+                    title: "Sobrancelha"
+                },
+                {
+                    imageUrl: "/hidratacao.svg",
+                    title: "Hidratacao"
+                },
+            ];
 
-.... quickSearch
+### UTILIZAR COMPONENTE CONSTANTE DENTRO DE UMA PAGE/ROTA
+    ## 
+        {/* BUSCA RÁPIDA / QUICKSEARCH */}
+        <div className="flex gap-3 mt-6 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+          
+          {/* Itens Dinâmicos de uma Constante */}
+          {quickSearchOptions.map(barbershopOption => (
+            <Button variant="secondary" key={barbershopOption.title}>
+              <Image src={barbershopOption.imageUrl} alt={`Ícone ${barbershopOption.title}`} width={16} height={16} />
+              <p className="text-white">{barbershopOption.title}</p>
+            </Button>
+          ))}
+
+        </div>
 
 
 ### GIT & GITHUB

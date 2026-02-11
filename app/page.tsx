@@ -7,6 +7,7 @@ import BookingItem from "./_components/booking-item";
 import BarbershopItem from "./_components/barbershop-item";
 import { db } from "./_lib/prisma";
 import { Card, CardContent } from "./_components/ui/card";
+import { quickSearchOptions } from "./_constants/search";
 
 const Home = async () => {
 
@@ -34,8 +35,17 @@ const Home = async () => {
 
         {/* BUSCA RÁPIDA / QUICKSEARCH */}
         <div className="flex gap-3 mt-6 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+          
+          {/* Itens Dinâmicos de uma Constante */}
+          {quickSearchOptions.map(barbershopOption => (
+            <Button variant="secondary" key={barbershopOption.title}>
+              <Image src={barbershopOption.imageUrl} alt={`Ícone ${barbershopOption.title}`} width={16} height={16} />
+              <p className="text-white">{barbershopOption.title}</p>
+            </Button>
+          ))}
+          
           {/* Itens Mocados */}
-          <Button variant="secondary">
+          {/* <Button variant="secondary">
             <Image src="/barba.svg" alt="Ícone Barba" width={16} height={16} />
             <p className="text-white">Barba</p>
           </Button>
@@ -58,7 +68,7 @@ const Home = async () => {
           <Button variant="secondary">
             <Image src="/massagem.svg" alt="Ícone Massagem" width={14} height={16} />
             <p className="text-white">Massagem</p>
-          </Button>
+          </Button> */}
           {/* Fim itens mocados */}
         </div>
 
@@ -96,18 +106,18 @@ const Home = async () => {
           </div>
         </div>
 
-        {/* FOOTER */}
-        <footer className="mt-3">
-          <Card className="rounded-none">
-            <CardContent>
-              <p className="text-sm text-gray-400">@ 2026 Copyright <span className="font-bold">CapijavaScript</span></p>
-            </CardContent>
-          </Card>
-        </footer>
 
 
       </div>
 
+      {/* FOOTER */}
+      <footer className="mt-3">
+        <Card className="rounded-none">
+          <CardContent>
+            <p className="text-sm text-gray-400">@ 2026 Copyright <span className="font-bold">CapijavaScript</span></p>
+          </CardContent>
+        </Card>
+      </footer>
     </div>
   );
 };
