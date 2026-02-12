@@ -227,3 +227,18 @@ Fluxo Ideal:
             if (!barbershop) {
                 return notFound();
             };
+
+### MOSTRANDO INFORMAÇÕES COM QUERY USANDO JOIN, CRUZANDO INFORMAÇÕES PARA TRAZER DADOS ESPECÍFICOS/AGREGADOS
+    ## COM O PRISMA, UTILIZAR O INCLUDE PARA DEIXAR ATIVADO AS INFORMAÇÕES A MAIS PARA ESSE JOIN BUSCAR
+        ./app/barbershops/[id]/page.tsx
+            const BarbershopPage = async ({params}: BarbershopPageProps) => {
+                const barbershop = await db.barbershop.findUnique({
+                    where: {
+                        id: id,
+                    },
+                    // AQUI
+                    include: {
+                        services: true
+                    }
+                })
+            }
