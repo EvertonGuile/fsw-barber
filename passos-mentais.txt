@@ -170,5 +170,60 @@ Fluxo Ideal:
         refactor: create QuickSearchButtons component
 
 
+... detalhes da barbearia
+
+### CRIAR UMA ROTA PARA NOVA PÁGINA
+    ## CRIAR PASTA COM NOME DA ROTA
+        ## CRIAR UMA PASTA COM NOME [id]~
+            ## CRIAR COMPONENTE PAGE.TSX QUE É A ROTA PADRÃO DO NEXT.JS (PARA ESSE CAMINHO)
+                ./app/barbershops/[id]/page.tsx
+
+### DEFINIR COMO ACESSAR UMA NOVA ROTA/TELA
+    ## UTILIZAR COMPONENTE LINK DO NEXT EM UM ELEMENTO QUE SERÁ CLICADO, POR EXEMPLO
+        ./app/_components/barbershop-item.tsx
+            ...
+            {/* Seta navegação nesse Button com o Link, passando como parâmetro a rota com id da barbearia relacionada ao card clicado/renderizado */}
+            <Link href={`/barbershops/${barbershop.id}`}>Reservar</Link>
+
+### RENDERIZAR INFORMAÇÃO DO BANCO DE DADOS
+    ## ARMAZENAR UMA QUERY DENTRO DE UMA CONSTANTE
+        # A QUERY PROCURA NO BANCO POR UM ID IGUAL AO ID PASSADO COMO PARÂMETRO NA ROTA POR MEIO DO ELEMENTO NEXT LINK DO ELEMENTO CLICADO
+    ## RENDERIZAR INFORMAÇÃO DENTRO DE UMA TAG HTML COM ESSA VARIÁVEL ACESSANDO A INFORMAÇÃO DESEJADA DO DADO DO BANCO ATRIBUÍDO À ESSA VARIÁVEL (por exemplo a propriedade name do dado)
+
+### INSERIR ELEMENTOS ÚTEIS NA NOVA TELA
+    ## RENDERIZAR UMA DIV COM IMAGEM
+        # DIV COM POSIÇÃO RELATIVE COM TAMANHO DEFINIDA
+
+        # COLOCAR UMA IMAGEM COM O IMAGE DO NEXT COM ALT DINÂMICO, FILL E O TIPO DE PREENCHIMENTO (object-cover)
+
+    ## BOTÃO DENTRO DE UMA DIV POR CIMA DE OUTROS ELEMENTOS DESSA DIV (no caso por cima de uma imagem de fundo)
+        # COMPONENTE BUTTON PARA VOLTAR PÁGINA, COM SIZE DE ICON E VARIANT SECONDARY, POSITION ABSOLUTE TOP 4 E LEFT 4
+            # RENDERIZAR UM CHEVRONLEFTICON DO LUCIDE REACT
+
+        # COMPONENTE BUTTON PARA MENU HAMBURGUER, TAMBEM COM SIZE ICON, VARIANTE SECONDARY, POSITION ABSOLUTE TOP-4 RIGHT-4
+            # RENDERIZAR UM MENUICON DO LUCIDE REACT
+
+### BOTÃO PARA VOLTAR UMA PÁGINA
+    # ESCOLHER QUAL SERÁ O BOTÃO
+
+    # ENVOLVER ESSE BOTÃO COM COMPONENTE LINK DO NEXT
+
+    # COLOCAR O HREF COM "/"
+
+### PARA UM HTML MAIS SEMÂNTICO, TENDO UM LINK DENTRO DE UM BUTTON
+    ## COLOCAR UM ANCHOR TAG NO BUTTON PARA QUE ELE PEGUE DO FILHO (LINK) COLOCANDO O ASCHILD NELE
+        ./app/_components/barbershop-item.tsx
+            ...
+            <Button variant="secondary" className="w-full mt-3" asChild>
+                {/* Seta navegação nesse Button com o Link */}
+                <Link href={`/barbershops/${barbershop.id}`}>Reservar</Link>
+            </Button>
 
 
+### CONFIGURANDO PARA PÁGINA NOT FOUND 404
+    ## FAZER UMA CONDICIONAL QUE VERIFICA SE A CONSTANTE NÃO EXISTIR (VAZIA) RETORNA MÉTODO DO NEXT notFound()
+        ./app/barbershops/[id]/page.tsx
+            ...
+            if (!barbershop) {
+                return notFound();
+            };
