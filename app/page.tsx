@@ -110,14 +110,7 @@ const Home = async () => {
 
       </div>
 
-      {/* FOOTER */}
-      <footer className="mt-3">
-        <Card className="rounded-none">
-          <CardContent>
-            <p className="text-sm text-gray-400">@ 2026 Copyright <span className="font-bold">CapijavaScript</span></p>
-          </CardContent>
-        </Card>
-      </footer>
+      
     </div>
   );
 };
