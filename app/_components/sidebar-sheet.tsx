@@ -1,10 +1,11 @@
-import { CalendarIcon, HomeIcon, LogOutIcon, MenuIcon } from "lucide-react";
+import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { quickSearchOptions } from "../_constants/search";
 import Image from "next/image";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 
 const SidebarSheet = () => {
     return (
@@ -13,15 +14,42 @@ const SidebarSheet = () => {
                 <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
 
-            <div className="pb-5 pl-1 border-b flex gap-3 items-center">
-                <Avatar className="mt-1">
-                    <AvatarImage src="https://images.unsplash.com/photo-1654110455429-cf322b40a906?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fHww" />
-                </Avatar>
+            <div className="pb-5 pl-1 justify-between border-b flex gap-3 items-center">
+                <h2 className="font-bold">Olá, <span className="text-[#8162FF]">convidado</span>. Faça seu login!</h2>
 
-                <div>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button size="icon" className="bg-[#8162FF]">
+                            <LogInIcon className="text-white" />
+                        </Button>
+                    </DialogTrigger>
+
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>
+                                Faça seu login na plataforma
+                            </DialogTitle>
+
+                            <DialogDescription>
+                                Conecte-se usando sua conta do Google.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <Button className="gap-1 font-bold text-white" variant="outline">
+                            <Image alt="Logo do Google" src="/Google.svg" width={18} height={18}  />
+                            Google
+                        </Button>
+                    </DialogContent>
+                </Dialog>
+
+                {/* <Avatar className="mt-1">
+                    <AvatarImage src="https://images.unsplash.com/photo-1654110455429-cf322b40a906?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fHww" />
+                </Avatar> */}
+
+                {/* <div>
                     <p className="font-bold">Diogo Nogueira</p>
                     <p className="text-xs">diogo@nogueira.com</p>
-                </div>
+                </div> */}
             </div>
             
             <div className="pb-3 flex flex-col gap-2 border-b">
