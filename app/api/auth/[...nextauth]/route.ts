@@ -4,12 +4,21 @@ import NextAuth from "next-auth"
 import { Adapter } from "next-auth/adapters";
 import GoogleProvider from 'next-auth/providers/google'
 
+
 const handler = NextAuth({
-    adapter: PrismaAdapter(db) as Adapter,
+    adapter: PrismaAdapter(db),
+    debug: true,
   providers: [
     GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID as string,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        clientId: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+
+        // permitir troca de conta
+        authorization: {
+          params: {
+            prompt: "select_account"
+          }
+        }
     })
   ]
 });
