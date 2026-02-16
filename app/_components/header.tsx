@@ -13,8 +13,10 @@ const Header = () => {
         // Card vem com py e gap
         // CardContent vem com px
         <Card className="p-0 rounded-none">
-            <CardContent className="p-5 flex justify-between">
-                <Image src="/Logo.png" width={120} height={18} alt="Logo da aplicação" />
+            <CardContent className="p-5 flex justify-between items-center">
+                <Link href="/">
+                    <Image src="/Logo.png" width={120} height={18} alt="Logo da aplicação" />
+                </Link>                
                 
                 <Sheet>
                     <SheetTrigger asChild>
