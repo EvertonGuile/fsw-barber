@@ -9,6 +9,7 @@ import { db } from "./_lib/prisma";
 import { Card, CardContent } from "./_components/ui/card";
 import { quickSearchOptions } from "./_constants/search";
 import SearchBar from "./_components/search";
+import Link from "next/link";
 
 const Home = async () => {
 
@@ -43,9 +44,11 @@ const Home = async () => {
           
           {/* Itens Dinâmicos de uma Constante */}
           {quickSearchOptions.map(barbershopOption => (
-            <Button variant="secondary" key={barbershopOption.title}>
-              <Image src={barbershopOption.imageUrl} alt={`Ícone ${barbershopOption.title}`} width={16} height={16} />
-              <p className="text-white">{barbershopOption.title}</p>
+            <Button variant="secondary" key={barbershopOption.title} asChild>
+              <Link href={`/barbershops?service=${barbershopOption.title}`}>
+                <Image src={barbershopOption.imageUrl} alt={`Ícone ${barbershopOption.title}`} width={16} height={16} />
+                <p className="text-white">{barbershopOption.title}</p>
+              </Link>
             </Button>
           ))}
           
