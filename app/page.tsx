@@ -8,6 +8,7 @@ import BarbershopItem from "./_components/barbershop-item";
 import { db } from "./_lib/prisma";
 import { Card, CardContent } from "./_components/ui/card";
 import { quickSearchOptions } from "./_constants/search";
+import SearchBar from "./_components/search";
 
 const Home = async () => {
 
@@ -26,11 +27,15 @@ const Home = async () => {
         </div>
 
         {/* BUSCA / SEARCH */}
-        <div className="mt-6 flex gap-2">
+        {/* <div className="mt-6 flex gap-2">
           <Input placeholder="Digite o que procura..." />
           <Button className="bg-[#8162FF] text-white">
             <SearchIcon strokeWidth={3} />
           </Button>
+        </div> */}
+
+        <div className="mt-2">
+          <SearchBar />
         </div>
 
         {/* BUSCA RÁPIDA / QUICKSEARCH */}
