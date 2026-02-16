@@ -13,7 +13,7 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 
 const formSchema = z.object({
-    search: z.string().trim().min(1, {
+    title: z.string().trim().min(1, {
         message: "Digite algo para buscar",
     })
 });
@@ -27,13 +27,13 @@ const SearchBar = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            search: "",
+            title: "",
         }
     })
     
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
         // e.preventDefault();
-        router.push(`/barbershops?search=${data.search}`)
+        router.push(`/barbershops?title=${data.title}`)
     }
 
     return <>
@@ -48,7 +48,7 @@ const SearchBar = () => {
             <form onSubmit={form.handleSubmit(handleSubmit)} className="flex items-start justify-between gap-2">
                 <FormField
                     control={form.control}
-                    name="search"
+                    name="title"
                     render={({field}) => (
                         <FormItem className="flex-1">
                             <FormControl>

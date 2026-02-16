@@ -93,10 +93,19 @@ const SidebarSheet = () => {
 
             <div className="pb-3 flex flex-col gap-2">
                 {quickSearchOptions.map((serviceOption) => (
-                    <Button key={serviceOption.title} className="px-3 justify-start" variant="ghost">
-                        <Image alt={"Ícone do serviço" + serviceOption.title} src={serviceOption.imageUrl} width={15} height={16} />
-                        {serviceOption.title}
-                    </Button>
+                    <SheetClose key={serviceOption.title} asChild>
+                        <Button className="px-3 justify-start" variant="ghost" asChild>
+                            <Link href={`/barbershops?service=${serviceOption.title}`}>
+                                {serviceOption.title != "Hidratacao" ? (
+                                    <Image alt={"Ícone do serviço" + serviceOption.title} src={serviceOption.imageUrl} width={15} height={16} />
+                                ) : 
+                                    <Image alt={"Ícone do serviço" + serviceOption.title} src={serviceOption.imageUrl} width={9} height={2} className="mx-0.5" />
+                                }
+                                
+                                {serviceOption.title}
+                            </Link>
+                        </Button>
+                    </SheetClose>
                 ))}
             </div>
 

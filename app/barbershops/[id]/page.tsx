@@ -1,3 +1,4 @@
+import BackButton from "@/app/_components/back_button";
 import PhoneItem from "@/app/_components/phone-item";
 import ServiceItem from "@/app/_components/service-item";
 import SidebarSheet from "@/app/_components/sidebar-sheet";
@@ -44,9 +45,10 @@ const BarbershopPage = async ({params}: BarbershopProp) => {
             <Image alt={"Imagem da barbearia" + barbershop?.name} src={barbershop?.imageUrl} fill className="object-cover" />
 
             <Button size="icon" variant="secondary" className="absolute top-4 left-4" asChild>
-                <Link href="/" >
+                {/* <Link href="/" >
                     <ChevronLeftIcon />
-                </Link>
+                </Link> */}
+                <BackButton />
             </Button>
 
             {/* <Button size="icon" variant="secondary" className="absolute top-4 right-4">
