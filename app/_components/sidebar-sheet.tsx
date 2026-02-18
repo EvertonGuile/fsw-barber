@@ -19,6 +19,8 @@ const SidebarSheet = () => {
     // função de logout do nextauth
     const handleLogoutClick = () => signOut();
 
+    console.log(data?.user?.image)
+
     return (
         <SheetContent className="pt-3 px-5 overflow-y-auto">
             <SheetHeader className="pb-0 px-0">
@@ -29,9 +31,9 @@ const SidebarSheet = () => {
 
                 {data?.user ? (
                     <div className="pl-1 flex items-center gap-3">
-                        <Avatar className="mt-1">
+                        <Avatar className="mt-1 h-10 w-10">
 
-                            <AvatarImage src={data.user.image ?? ""} />
+                            <AvatarImage src={data?.user?.image ?? ""} width={18} height={18} />
                         </Avatar>
 
                         <div>
@@ -96,11 +98,13 @@ const SidebarSheet = () => {
                     <SheetClose key={serviceOption.title} asChild>
                         <Button className="px-3 justify-start" variant="ghost" asChild>
                             <Link href={`/barbershops?service=${serviceOption.title}`}>
-                                {serviceOption.title != "Hidratacao" ? (
-                                    <Image alt={"Ícone do serviço" + serviceOption.title} src={serviceOption.imageUrl} width={15} height={16} />
-                                ) : 
-                                    <Image alt={"Ícone do serviço" + serviceOption.title} src={serviceOption.imageUrl} width={9} height={2} className="mx-0.5" />
-                                }
+                                <Image
+                                    alt={"Ícone do serviço" + serviceOption.title}
+                                    src={serviceOption.imageUrl}
+                                    width={serviceOption.iconWidth}
+                                    height={serviceOption.iconHeight}
+                                    className={`${serviceOption.iconMargin}`}
+                                />
                                 
                                 {serviceOption.title}
                             </Link>

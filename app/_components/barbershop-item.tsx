@@ -17,15 +17,16 @@ const BarbershopItem = ({barbershop}: IBarbershopItemProps) => {
             <div className="relative h-[159px]">
                 <Image alt={barbershop.name} src={barbershop.imageUrl} fill className="object-cover rounded-t-xl" />
 
-                <Badge className="absolute top-2 left-2 space-x-1">
+                <Badge className="absolute top-2 left-2" variant="secondary">
                     <StarIcon size={12} color="#8162FF" className="fill-[#8162FF]" />
+                    {/* <StarIcon size={12} /> */}
 
-                    <p className="text-xs font-semibold">5.0</p>
+                    <p className="text-xs font-semibold translate-y-px">5.0</p>
                 </Badge>
             </div>
 
             {/* TEXTO */}
-            <div className="py-3 px-1">
+            <div className="pt-3 pb-2 px-1">
                 <h3 className="font-semibold truncate">{barbershop.name}</h3>
                 <p className="text-sm text-gray-400 truncate">{barbershop.address}</p>
 
