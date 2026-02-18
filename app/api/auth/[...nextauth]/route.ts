@@ -20,7 +20,19 @@ const handler = NextAuth({
           }
         }
     })
-  ]
+  ],
+
+  // função chamada quando chamamos função useSession que retorna o usuário logado
+  callbacks: {
+    async session({session, user}) {
+      session.user = {
+        ...session.user,
+        id: user.id,
+      } as any
+
+      return session
+    }
+  }
 });
 
 export { handler as GET, handler as POST }

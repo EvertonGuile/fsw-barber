@@ -46,7 +46,12 @@ const Home = async () => {
           {quickSearchOptions.map(barbershopOption => (
             <Button variant="secondary" key={barbershopOption.title} asChild>
               <Link href={`/barbershops?service=${barbershopOption.title}`}>
-                <Image src={barbershopOption.imageUrl} alt={`Ícone ${barbershopOption.title}`} width={16} height={16} />
+                <Image
+                  src={barbershopOption.imageUrl}
+                  alt={`Ícone ${barbershopOption.title}`}
+                  width={barbershopOption.iconWidth}
+                  height={barbershopOption.iconHeight}
+                />
                 <p className="text-white">{barbershopOption.title}</p>
               </Link>
             </Button>

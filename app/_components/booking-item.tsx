@@ -9,7 +9,7 @@ const BookingItem = () => {
                 {/* ESQUERDA */}
                 <div className="flex flex-col gap-2 py-5 pl-5">
                     <Badge className="w-fit bg-[#8162FF] text-white">
-                        Falta confirmar
+                        <p className="translate-y-px font-bold">Falta confirmar</p>
                     </Badge>
                     <h3 className="font-semibold">Corte de Cabelo</h3>
 
