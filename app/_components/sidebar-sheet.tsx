@@ -113,6 +113,7 @@ const SidebarSheet = () => {
                 ))}
             </div>
 
+            {/*  */}
             {data?.user ? (
                 <div className="flex flex-col gap-2 border-t pt-3">
                     <Button className="justify-start text-green-600 font-bold" variant="ghost" onClick={handleLogoutClick}>
