@@ -1,17 +1,20 @@
 "use client"
 
-import { Barbershop, BarbershopService } from "@/generated/prisma/client";
+import { Barbershop, BarbershopService, Booking } from "@/generated/prisma/client";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Calendar } from "./ui/calendar";
 import { ptBR } from "date-fns/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format, set, setMinutes } from "date-fns";
 import { createBooking } from "../_actions/create-booking";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import { getBookings } from "../_actions/get-bookings";
+import { date } from "zod";
+import { DayOfWeek } from "react-day-picker";
 
 interface IServiceItemProps {
     service: BarbershopService;
@@ -43,6 +46,28 @@ const TIME_LIST = [
   "18:00"
 ];
 
+// 
+const getTimeList = (bookings: Booking[]) => {
+
+    // const timeList = TIME_LIST.filter(time => {
+    return TIME_LIST.filter(time => {
+        const hour = Number(time.split(":")[0])
+        const minutes = Number(time.split(":")[1])
+        
+        const hasBookingOnCurrentTime = bookings.some(
+            (booking) =>
+                booking.date.getHours() === hour &&
+                booking.date.getMinutes() === minutes
+        )
+
+        // if (bookings.some(booking => booking.date.getHours() === hour && booking.date.getMinutes)) {
+        if (hasBookingOnCurrentTime) {
+            return false;
+        };
+        return true;
+    })
+}
+
 const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
 
     const [selectedDay, setSeletedDay] = useState<Date | undefined>(undefined);
@@ -54,8 +79,40 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
     // confirma se vem o data com os dados do user logado
     // console.log({data})
 
+    // atualiza state ao abrir agendamento de um serviço para recarregar horários disponíveis
+    const [bookingSheetIsOpen, setBookingSheetIsOpen] = useState(false);
+
+    const handleBookingSheetOpenShange = () => {
+        setSeletedDay(undefined);
+        setSelectedTime(undefined);
+        setDayBookings([]);
+        setBookingSheetIsOpen(false);
+
+        // faz com que ao abrir o Calendar toda vez o mês mostrado é o atual
+        setMonth(new Date());
+    }
+
+
+    // 
+    const [dayBookings, setDayBookings] = useState<Booking[]>([])
+
+    useEffect(() => {
+        const fetch = async () => {
+            if (!selectedDay) return;
+            const bookings = await getBookings({date: selectedDay, serviceId: service.id})
+            setDayBookings(bookings)
+        }
+        fetch()
+    }, [selectedDay, service.id])
+
+    console.log({dayBookings})
+
     const handleDateSelect = (date: Date | undefined) => {
         setSeletedDay(date);
+
+        if (date) {
+            setMonth(date)
+        }
     };
 
     const handleTimeSelect = (time: string) => {
@@ -91,6 +148,34 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
         }
     }
 
+    // tentativa desabilitar datas anteriores a data arual (ChatGPT)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // tentativa desabilitar domingos (Documentação React Daypicker)
+    const sunday: DayOfWeek = { dayOfWeek: [0]};
+
+
+
+    // lógica para mudar o mês ao clicar na data se for maior que o ultimo dia ou menor que o primeiro (ChatGPT)
+    // aqui crio um state para o mês
+    const [month, setMonth] = useState<Date>(new Date());
+    // depois altero o Calendar com isso:
+        // <Calendar
+        //     month={month}
+        //     onMonthChange={setMonth}
+        //     mode="single"
+        //     selected={selectedDay}
+        //     onSelect={(date) => {
+        //         setSeletedDay(date);
+
+        //         if (date) {
+        //         setMonth(date); // 👈 MUDA O MÊS AUTOMATICAMENTE
+        //         }
+        //     }}
+        // />
+
+
     return (
         <Card className="p-0">
             <CardContent className="flex items-center gap-3 p-3">
@@ -110,12 +195,15 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
                             }).format(Number(service.price))}
                         </p>
 
-                        <Sheet>
-                            <SheetTrigger>
+                        <Sheet open={bookingSheetIsOpen} onOpenChange={handleBookingSheetOpenShange}>
+                            {/* <SheetTrigger>
                                 <Button size="sm" variant="secondary">
                                     Reservar
                                 </Button>
-                            </SheetTrigger>
+                            </SheetTrigger> */}
+                            <Button size="sm" variant="secondary" onClick={() => setBookingSheetIsOpen(true)}>
+                                Reservar
+                            </Button>
 
                             
                                 <SheetContent className="gap-0 overflow-y-scroll">
@@ -125,9 +213,30 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
 
                                     <div>
                                         <div className="flex border-b">
-                                            <Calendar className="flex-1 px-4" mode="single" locale={ptBR}
+                                            <Calendar 
+                                            
+                                            month={month}
+                                            onMonthChange={setMonth}
+                                            
+                                            className="flex-1 px-4" mode="single" locale={ptBR}
                                             selected={selectedDay}
+                                            
                                             onSelect={handleDateSelect}
+
+                                            // AQUI
+                                            disabled={[
+                                                {before:  today},
+                                                sunday
+                                            ]}
+
+                                            modifiers={{
+    sunday: sunday
+  }}
+
+  modifiersClassNames={{
+    sunday: "bg-gray-50 opacity-30 rounded-md"
+  }}
+
                                             styles={{
                                                 
                                                                         // div container que envolve todo o calendário
@@ -164,15 +273,19 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
                                         
                                                 },
                                                     // botões dos dias do mês
-                                                    day_button: {
+                                    day_button: {
                                         
-                                                    },
+                                    },
                                                                         }}
+
+                                                                        
                                         />
                                         </div>
                                         {selectedDay && (
                                             <div className={`p-5 gap-3 flex overflow-x-auto [&::-webkit-scrollbar]:hidden ${selectedDay && "border-b" }`}>
-                                                {TIME_LIST.map(time => <Button key={time} variant={selectedTime === time ? "default" : "ghost"} className="rounded-full border-[3px] border-gray hover:border-[3px] hover:border-white"
+                                                
+    {/* {TIME_LIST.map(time => <Button key={time} variant={selectedTime === time ? "default" : "ghost"} className="rounded-full border-[3px] border-gray hover:border-[3px] hover:border-white" */}
+    {getTimeList(dayBookings).map(time => <Button key={time} variant={selectedTime === time ? "default" : "ghost"} className="rounded-full border-[3px] border-gray hover:border-[3px] hover:border-white"
                                                 onClick={() => handleTimeSelect(time)}
                                                 >
                                                     {time}
