@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import { getBookings } from "../_actions/get-bookings";
 import { date } from "zod";
 import { DayOfWeek } from "react-day-picker";
+import { Dialog, DialogContent } from "./ui/dialog";
+import SignInDialog from "./sign-in-dialog";
 
 interface IServiceItemProps {
     service: BarbershopService;
@@ -47,7 +49,8 @@ const TIME_LIST = [
 ];
 
 // 
-const getTimeList = (bookings: Booking[]) => {
+// const getTimeList = (bookings: Booking[]) => {
+const getTimeList = (bookings: Booking[], selectedDay?: Date) => {
 
     // const timeList = TIME_LIST.filter(time => {
     return TIME_LIST.filter(time => {
@@ -64,11 +67,36 @@ const getTimeList = (bookings: Booking[]) => {
         if (hasBookingOnCurrentTime) {
             return false;
         };
+        // return true;
+
+        // Bloquear horários passados se for hoje (ChatGPT)
+        if (selectedDay) {
+            const now = new Date();
+
+            const isToday = 
+                selectedDay.getDate() === now.getDate() &&
+                selectedDay.getMonth() === now.getMonth() &&
+                selectedDay.getFullYear() === now.getFullYear();
+
+            if (isToday) {
+                if (
+                    hour < now.getHours() || 
+                    (hour === now.getHours() && minutes <= now.getMinutes())
+                ) {
+                    return false;
+                };
+            };
+        };
+
         return true;
     })
 }
 
 const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
+
+    // state para sigInDialog aberto ou fechado
+    const [sigInDialogIsOpen, SetSigInDialogIsOpen] = useState(false);
+
 
     const [selectedDay, setSeletedDay] = useState<Date | undefined>(undefined);
 
@@ -104,6 +132,14 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
         }
         fetch()
     }, [selectedDay, service.id])
+
+    // função que controla o sigInOpen
+    const handleBookingClick = () => {
+        if (data?.user) {
+            return setBookingSheetIsOpen(true)
+        } 
+        return SetSigInDialogIsOpen(true)
+    }
 
     console.log({dayBookings})
 
@@ -155,6 +191,13 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
     // tentativa desabilitar domingos (Documentação React Daypicker)
     const sunday: DayOfWeek = { dayOfWeek: [0]};
 
+    // verifica se tem horário disponível ou se já passou do horario de expediente (ChatGPT)
+    const hasAvailableTimes = (date: Date, bookings: Booking[]) => {
+        const availableTimes = getTimeList(bookings, date);
+        return availableTimes.length > 0;
+    };
+
+
 
 
     // lógica para mudar o mês ao clicar na data se for maior que o ultimo dia ou menor que o primeiro (ChatGPT)
@@ -175,163 +218,222 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
         //     }}
         // />
 
+        // NOVA LÓGICA CHATGPT
+        const isDateDisabled = (date: Date) => {
+
+    // normaliza hoje
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    // bloquear datas passadas
+    if (date < today) return true;
+
+    // bloquear domingos
+    if (date.getDay() === 0) return true;
+
+
+    // verificar se é hoje
+    const now = new Date();
+
+    const isToday =
+        date.getDate() === now.getDate() &&
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear();
+
+
+    if (isToday) {
+
+        const lastTime = TIME_LIST[TIME_LIST.length - 1];
+
+        const [lastHour, lastMinute] = lastTime.split(":").map(Number);
+
+        if (
+            now.getHours() > lastHour ||
+            (
+                now.getHours() === lastHour &&
+                now.getMinutes() >= lastMinute
+            )
+        ) {
+            return true;
+        }
+
+    }
+
+    return false;
+};
+
+
 
     return (
-        <Card className="p-0">
-            <CardContent className="flex items-center gap-3 p-3">
-                {/* ESQUERDA */}
-                <div className="relative min-h-[110px] max-h-[110px] min-w-[110px] max-w-[110px]">
-                    <Image src={service.imageUrl} alt={"Imagem do serviço" + service.imageUrl} fill className="object-cover rounded-xl" />
-                </div>
-                {/* DIREITA */}
-                <div className="space-y-3 flex-1">
-                    <h3 className="font-semibold text-sm">{service.name}</h3>
-                    <p className="text-gray-400 text-sm">{service.description}</p>
-                    {/* PREÇO E BOTÃO */}
-                    <div className="flex items-center justify-between">
-                        <p className="font-bold text-sm text-[#8162FF]">{Intl.NumberFormat("pt-BR", {
-                                style: 'currency',
-                                currency: 'BRL'
-                            }).format(Number(service.price))}
-                        </p>
+        <>
+            <Card className="p-0">
+                <CardContent className="flex items-center gap-3 p-3">
+                    {/* ESQUERDA */}
+                    <div className="relative min-h-[110px] max-h-[110px] min-w-[110px] max-w-[110px]">
+                        <Image src={service.imageUrl} alt={"Imagem do serviço" + service.imageUrl} fill className="object-cover rounded-xl" />
+                    </div>
+                    {/* DIREITA */}
+                    <div className="space-y-3 flex-1">
+                        <h3 className="font-semibold text-sm">{service.name}</h3>
+                        <p className="text-gray-400 text-sm">{service.description}</p>
+                        {/* PREÇO E BOTÃO */}
+                        <div className="flex items-center justify-between">
+                            <p className="font-bold text-sm text-[#8162FF]">{Intl.NumberFormat("pt-BR", {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                }).format(Number(service.price))}
+                            </p>
 
-                        <Sheet open={bookingSheetIsOpen} onOpenChange={handleBookingSheetOpenShange}>
-                            {/* <SheetTrigger>
-                                <Button size="sm" variant="secondary">
+                            <Sheet open={bookingSheetIsOpen} onOpenChange={handleBookingSheetOpenShange}>
+                                {/* <SheetTrigger>
+                                    <Button size="sm" variant="secondary">
+                                        Reservar
+                                    </Button>
+                                </SheetTrigger> */}
+                                {/* <Button size="sm" variant="secondary" onClick={() => setBookingSheetIsOpen(true)}> */}
+                                <Button size="sm" variant="secondary" onClick={handleBookingClick}>
                                     Reservar
                                 </Button>
-                            </SheetTrigger> */}
-                            <Button size="sm" variant="secondary" onClick={() => setBookingSheetIsOpen(true)}>
-                                Reservar
-                            </Button>
 
-                            
-                                <SheetContent className="gap-0 overflow-y-scroll">
-                                    <SheetHeader>
-                                        <SheetTitle>Fazer Reserva</SheetTitle>
-                                    </SheetHeader>
+                                
+                                    <SheetContent className="gap-0 overflow-y-scroll">
+                                        <SheetHeader>
+                                            <SheetTitle>Fazer Reserva</SheetTitle>
+                                        </SheetHeader>
 
-                                    <div>
-                                        <div className="flex border-b">
-                                            <Calendar 
-                                            
-                                            month={month}
-                                            onMonthChange={setMonth}
-                                            
-                                            className="flex-1 px-4" mode="single" locale={ptBR}
-                                            selected={selectedDay}
-                                            
-                                            onSelect={handleDateSelect}
-
-                                            // AQUI
-                                            disabled={[
-                                                {before:  today},
-                                                sunday
-                                            ]}
-
-                                            modifiers={{
-    sunday: sunday
-  }}
-
-  modifiersClassNames={{
-    sunday: "bg-gray-50 opacity-30 rounded-md"
-  }}
-
-                                            styles={{
+                                        <div>
+                                            <div className="flex border-b">
+                                                <Calendar 
                                                 
-                                                                        // div container que envolve todo o calendário
-                                                                        month: {
-                                        textTransform: "capitalize",
-                                                                        },
-                                        // div que envolve a navegação com as setas do mês
-                                        nav: {
-                                            color: "#8162FF",
-                                            fontSize: "24px"
-                                        },
-                                            // div com o mês e ano selecionado
-                                            month_caption: {
-                                        
-                                            },
-                                        // div que envolve as divs filhas dias da semana e semanas do mês COM ESPAÇAMENTO ENTRE CABEÇALHO DO CALENDÁRIO
-                                        month_grid: {
-                                        
-                                        },
-                                            // div dias da semana
-                                            weekdays: {
-                                        
-                                            },
-                                                // cada dia da semana dentro da div
-                                                weekday: {
-                                        
-                                                },
-                                            // div semanas do mês
-                                            weeks: {
-                                        
-                                            },
-                                                // divs que separam por semanas dentro da div pai semanas do mês
-                                                week: {
-                                        
-                                                },
-                                                    // botões dos dias do mês
-                                    day_button: {
-                                        
-                                    },
-                                                                        }}
+                                                month={month}
+                                                onMonthChange={setMonth}
+                                                
+                                                className="flex-1 px-4" mode="single" locale={ptBR}
+                                                selected={selectedDay}
+                                                
+                                                onSelect={handleDateSelect}
 
-                                                                        
-                                        />
+                                                // AQUI
+                                                // disabled={[
+                                                //     {before:  today},
+                                                //     sunday
+                                                // ]}
+                                                disabled={isDateDisabled}
+                                                
+
+                                                modifiers={{
+        sunday: sunday
+    }}
+
+    modifiersClassNames={{
+        sunday: "bg-gray-50 opacity-30 rounded-md"
+    }}
+
+                                                styles={{
+                                                    
+                                                                            // div container que envolve todo o calendário
+                                                                            month: {
+                                            textTransform: "capitalize",
+                                                                            },
+                                            // div que envolve a navegação com as setas do mês
+                                            nav: {
+                                                color: "#8162FF",
+                                                fontSize: "24px"
+                                            },
+                                                // div com o mês e ano selecionado
+                                                month_caption: {
+                                            
+                                                },
+                                            // div que envolve as divs filhas dias da semana e semanas do mês COM ESPAÇAMENTO ENTRE CABEÇALHO DO CALENDÁRIO
+                                            month_grid: {
+                                            
+                                            },
+                                                // div dias da semana
+                                                weekdays: {
+                                            
+                                                },
+                                                    // cada dia da semana dentro da div
+                                                    weekday: {
+                                            
+                                                    },
+                                                // div semanas do mês
+                                                weeks: {
+                                            
+                                                },
+                                                    // divs que separam por semanas dentro da div pai semanas do mês
+                                                    week: {
+                                            
+                                                    },
+                                                        // botões dos dias do mês
+                                        day_button: {
+                                            
+                                        },
+                                                                            }}
+
+                                                                            
+                                            />
+                                            </div>
+                                            {selectedDay && (
+                                                <div className={`p-5 gap-3 flex overflow-x-auto [&::-webkit-scrollbar]:hidden ${selectedDay && "border-b" }`}>
+                                                    
+        {/* {TIME_LIST.map(time => <Button key={time} variant={selectedTime === time ? "default" : "ghost"} className="rounded-full border-[3px] border-gray hover:border-[3px] hover:border-white" */}
+        {getTimeList(dayBookings, selectedDay).map(time => <Button key={time} variant={selectedTime === time ? "default" : "ghost"} className="rounded-full border-[3px] border-gray hover:border-[3px] hover:border-white"
+                                                    onClick={() => handleTimeSelect(time)}
+                                                    >
+                                                        {time}
+                                                    </Button>)}
+                                                </div>
+                                            )}
+                                            {selectedTime && selectedDay && (
+                                                <div className="p-5">
+                                                    <Card className="py-3">
+                                                        <CardContent className="px-3 space-y-1">
+                                                            <div className="flex justify-between items-center">
+                                                                <h2 className="font-bold">{service.name}</h2>
+                                                                <p className="text-sm font-bold">{Intl.NumberFormat("pt-BR", {
+                                                                    style: "currency",
+                                                                    currency: "BRL",
+                                                                }).format(Number(service.price))}</p>
+                                                            </div>
+                                                            <div className="flex justify-between items-center">
+                                                                <h2 className="text-sm text-gray-400">Data</h2>
+                                                                <p className="text-sm">{format(selectedDay, "d 'de' MMMM", {locale: ptBR})}</p>
+                                                            </div>
+                                                            <div className="flex justify-between items-center">
+                                                                <h2 className="text-sm text-gray-400">Horário</h2>
+                                                                <p className="text-sm">{selectedTime}</p>
+                                                            </div>
+                                                            <div className="flex justify-between items-center">
+                                                                <h2 className="text-sm text-gray-400">Barbearia</h2>
+                                                                <p className="text-sm">{barbershop.name}</p>
+                                                            </div>
+                                                        </CardContent>
+                                                    </Card>
+                                                </div>
+                                            )}
                                         </div>
-                                        {selectedDay && (
-                                            <div className={`p-5 gap-3 flex overflow-x-auto [&::-webkit-scrollbar]:hidden ${selectedDay && "border-b" }`}>
-                                                
-    {/* {TIME_LIST.map(time => <Button key={time} variant={selectedTime === time ? "default" : "ghost"} className="rounded-full border-[3px] border-gray hover:border-[3px] hover:border-white" */}
-    {getTimeList(dayBookings).map(time => <Button key={time} variant={selectedTime === time ? "default" : "ghost"} className="rounded-full border-[3px] border-gray hover:border-[3px] hover:border-white"
-                                                onClick={() => handleTimeSelect(time)}
-                                                >
-                                                    {time}
-                                                </Button>)}
-                                            </div>
-                                        )}
-                                        {selectedTime && selectedDay && (
-                                            <div className="p-5">
-                                                <Card className="py-3">
-                                                    <CardContent className="px-3 space-y-1">
-                                                        <div className="flex justify-between items-center">
-                                                            <h2 className="font-bold">{service.name}</h2>
-                                                            <p className="text-sm font-bold">{Intl.NumberFormat("pt-BR", {
-                                                                style: "currency",
-                                                                currency: "BRL",
-                                                            }).format(Number(service.price))}</p>
-                                                        </div>
-                                                        <div className="flex justify-between items-center">
-                                                            <h2 className="text-sm text-gray-400">Data</h2>
-                                                            <p className="text-sm">{format(selectedDay, "d 'de' MMMM", {locale: ptBR})}</p>
-                                                        </div>
-                                                        <div className="flex justify-between items-center">
-                                                            <h2 className="text-sm text-gray-400">Horário</h2>
-                                                            <p className="text-sm">{selectedTime}</p>
-                                                        </div>
-                                                        <div className="flex justify-between items-center">
-                                                            <h2 className="text-sm text-gray-400">Barbearia</h2>
-                                                            <p className="text-sm">{barbershop.name}</p>
-                                                        </div>
-                                                    </CardContent>
-                                                </Card>
-                                            </div>
-                                        )}
-                                    </div>
 
-                                    <SheetFooter className="px-5">
-                                        <SheetClose>
-                                            <Button onClick={handleCreateBooking} className="w-full" disabled={!selectedDay || !selectedTime}>Confirmar</Button>
-                                        </SheetClose>
-                                    </SheetFooter>
-                                </SheetContent>
-                        </Sheet>
+                                        <SheetFooter className="px-5">
+                                            <SheetClose>
+                                                <Button onClick={handleCreateBooking} className="w-full" disabled={!selectedDay || !selectedTime}>Confirmar</Button>
+                                            </SheetClose>
+                                        </SheetFooter>
+                                    </SheetContent>
+                            </Sheet>
+                        </div>
                     </div>
-                </div>
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+
+        <Dialog
+            open={sigInDialogIsOpen}
+            onOpenChange={(open) => SetSigInDialogIsOpen(open)}
+        >
+            <DialogContent>
+                <SignInDialog />
+            </DialogContent>
+        </Dialog>
+        </>
     );
 };
 
