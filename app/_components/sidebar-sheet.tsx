@@ -3,18 +3,19 @@
 import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { quickSearchOptions } from "../_constants/search";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { signIn, signOut, useSession } from "next-auth/react";
+import SignInDialog from "./sign-in-dialog";
 
 const SidebarSheet = () => {
     const {data} = useSession();
-    const handleLoginWithGoogleClick = async () => {
-        await signIn("google")
-    }
+    // const handleLoginWithGoogleClick = async () => {
+    //     await signIn("google")
+    // }
 
     // função de logout do nextauth
     const handleLogoutClick = () => signOut();
@@ -31,9 +32,11 @@ const SidebarSheet = () => {
 
                 {data?.user ? (
                     <div className="pl-1 flex items-center gap-3">
-                        <Avatar className="mt-1 h-10 w-10">
-
-                            <AvatarImage src={data?.user?.image ?? ""} width={18} height={18} />
+                        <Avatar className=" mt-1 h-10 w-10">
+                            <AvatarImage src={data.user?.image ?? ""}  />
+                            <AvatarFallback>
+                                {data.user?.name?.[0]}
+                            </AvatarFallback>
                         </Avatar>
 
                         <div>
@@ -51,7 +54,7 @@ const SidebarSheet = () => {
                             </Button>
                         </DialogTrigger>
 
-                        <DialogContent>
+                        {/* <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>
                                     Faça seu login na plataforma
@@ -66,6 +69,9 @@ const SidebarSheet = () => {
                                 <Image alt="Logo do Google" src="/Google.svg" width={18} height={18}  />
                                 Google
                             </Button>
+                        </DialogContent> */}
+                        <DialogContent>
+                            <SignInDialog />
                         </DialogContent>
                     </Dialog>
                 </>}
