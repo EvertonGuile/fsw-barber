@@ -94,36 +94,38 @@ const getTimeList = (bookings: Booking[], selectedDay?: Date) => {
 
 const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
 
+    
     // state para sigInDialog aberto ou fechado
     const [sigInDialogIsOpen, SetSigInDialogIsOpen] = useState(false);
-
-
+    
+    
     const [selectedDay, setSeletedDay] = useState<Date | undefined>(undefined);
-
+    
     const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
-
+    
     const {data} = useSession();
-
+    
     // confirma se vem o data com os dados do user logado
     // console.log({data})
-
+    
     // atualiza state ao abrir agendamento de um serviço para recarregar horários disponíveis
     const [bookingSheetIsOpen, setBookingSheetIsOpen] = useState(false);
-
+    
     const handleBookingSheetOpenShange = () => {
         setSeletedDay(undefined);
         setSelectedTime(undefined);
         setDayBookings([]);
         setBookingSheetIsOpen(false);
-
+        
         // faz com que ao abrir o Calendar toda vez o mês mostrado é o atual
         setMonth(new Date());
     }
-
-
+    
+    
     // 
     const [dayBookings, setDayBookings] = useState<Booking[]>([])
-
+    
+    
     useEffect(() => {
         const fetch = async () => {
             if (!selectedDay) return;
@@ -173,7 +175,10 @@ const ServiceItem = ({service, barbershop}: IServiceItemProps) => {
             await createBooking({
                 serviceId: service.id,
                 // userId: "cmlo45yni0000fslqxsf4t5tp",
-                userId: (data?.user as any).id,
+
+                // NOVA CONFIGURAÇÃO NÃO PRECISA PASSAR O USER ID AQUI
+                // userId: (data?.user as any).id,
+                
                 date: newDate,
             })
 
