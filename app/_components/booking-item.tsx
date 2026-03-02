@@ -1,3 +1,5 @@
+"use client"
+
 import { Booking } from "@/generated/prisma/client";
 import { Avatar, AvatarImage } from "./ui/avatar"
 import { Badge } from "./ui/badge"
@@ -6,9 +8,15 @@ import { BookingGetPayload } from "@/generated/prisma/models";
 import { format, isFuture } from "date-fns";
 import { locales } from "zod";
 import { ptBR } from "date-fns/locale";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import Image from "next/image";
 import PhoneItem from "./phone-item";
+import { Button } from "./ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { deleteBooking } from "../_actions/delete-booking";
+import { toast } from "sonner";
+import { useState } from "react";
 // import { Dialog, DialogTrigger } from "./ui/dialog";
 
 interface IBookingItemProps {
@@ -23,23 +31,44 @@ interface IBookingItemProps {
 };
 
 const BookingItem = ({booking}: IBookingItemProps) => {
+    // state que armazena informação se o menu lateral está aberto
+    const [isSheetIsOpen, setIsSheetIsOpen] = useState(false)
+
     // destructuring para facilitar acessos dos dados
     const {service: {barbershop}} = booking;
 
     const isConfirmed = isFuture(booking.date);
+
+    // função para deletar agendamento
+    const handleCancelBooking = async () => {
+        try {
+            await deleteBooking(booking.id)
+            // muda estado do SheetOpen
+            setIsSheetIsOpen(false);
+            toast.success("Reserva cancelada com sucesso!");
+        } catch (error) {
+            console.error(error);
+            toast.error("Erro ao cancelar reserva. Por favor, tente novamente.");
+        };
+    };
 
     // ChatGPT para retornar mês com primeira letra maiúscula
     function capitalize(text: string) {
        return text.charAt(0).toUpperCase() + text.slice(1);
     };
 
+    // função que altera estado de Sheet Aberto ou não
+    const handleSheetOpenChange = (isOpen: boolean) => {
+        setIsSheetIsOpen(isOpen);
+    };
+
     return (
-        <Sheet>
+        <Sheet open={isSheetIsOpen} onOpenChange={handleSheetOpenChange}>
             <SheetTrigger className="w-full">
                 <Card className="p-0 min-w-[70%]">
                     <CardContent className="flex justify-between p-0">
                         {/* ESQUERDA */}
-                        <div className="flex flex-col gap-2 py-5 pl-5">
+                        <div className="flex items-start flex-col gap-2 py-5 pl-5">
                             {/* <Badge className="w-fit bg-[#8162FF] text-white"> */}
                             {/* <Badge variant="default"> */}
                             <Badge variant={isConfirmed ? "default" : "secondary"}>
@@ -58,7 +87,7 @@ const BookingItem = ({booking}: IBookingItemProps) => {
                             </div>
                         </div>
                         {/* DIREITA */}
-                        <div className="flex flex-col items-center justify-center px-5 border-l-2">
+                        <div className="flex flex-col items-center justify-center px-5 border-l-2 min-w-[25%]">
                             {/* <p className="text-sm font-bold">Fevereiro</p> */}
                             {/* <p className="text-sm font-bold">{format(booking.date, "MMMM", {locale: ptBR})}</p> */}
                             <p className="text-sm font-bold">{capitalize(format(booking.date, "MMMM", {locale: ptBR}))}</p>
@@ -131,6 +160,71 @@ const BookingItem = ({booking}: IBookingItemProps) => {
                     ))}
                     </div>
                 </div>
+
+                <SheetFooter className="">
+                    <div className="flex items-center gap-3">
+                        <SheetClose asChild>
+                            {isConfirmed ? (
+                                <Button variant="outline" className="w-[50%]">Voltar</Button>
+                            ) : (
+                                <Button variant="outline" className="w-full">Voltar</Button>
+                            ) }
+                        </SheetClose>
+                        {isConfirmed && (
+                            // DUAS ALTERNATIVAS
+                            // 1ª UTILIZANDO DIALOG
+                            // <Dialog>
+                            //     <DialogTrigger>
+                            //         <Button variant="destructive" className="w-full">Cancelar Agendamento</Button>
+                            //     </DialogTrigger>
+
+                            //     <DialogContent className="w-[90%]">
+                            //         <DialogHeader>
+                            //             <DialogTitle>
+                            //                 Tem certeza que deseja cancelar o agendamento?
+                            //             </DialogTitle>
+
+                            //             <DialogDescription>
+                            //                 Esta ação não poderá ser desfeita. Caso tenha certeza do cancelamento do agendamento, clique em Cancelar Agendamento, ou clique em Voltar para não concluir o cancelamento.
+                            //             </DialogDescription>
+                            //         </DialogHeader>
+
+                            //         <DialogFooter className="">
+                            //             <DialogClose asChild>
+                            //                 <Button variant="secondary" className="w-full">Voltar</Button>
+                            //             </DialogClose>
+
+                            //             <Button variant="destructive" className="w-full">Cancelar Agendamento</Button>
+                            //         </DialogFooter>
+                            //     </DialogContent>
+                            // </Dialog>
+
+                            // 2ª UTILIZANDO ALERTDIALOG
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" className="w-[50%]">Cancelar Reserva</Button>
+                                </AlertDialogTrigger>
+
+                                <AlertDialogContent className="w-[90%]">
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Tem certeza que deseja cancelar o agendamento?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Esta ação não poderá ser desfeita. Caso tenha certeza do cancelamento do agendamento, clique em Cancelar Agendamento, ou clique em Voltar para não concluir o cancelamento.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Voltar</AlertDialogCancel>
+
+                                        <AlertDialogAction asChild>
+                                            <Button variant="destructive" onClick={handleCancelBooking}>Cancelar Agendamento</Button>
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        )}
+                    </div>
+                </SheetFooter>
             </SheetContent>
         </Sheet>
     );
