@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth"
 import { db } from "../_lib/prisma"
 import { error } from "console"
 import { authOptions } from "../_lib/auth"
+import { revalidatePath } from "next/cache"
 
 interface ICreateBookingParams {
     // userId: string,
@@ -26,4 +27,6 @@ export const createBooking = async (params: ICreateBookingParams) => {
     })
 
     // revalidar o cache da página para atualizar tela de agendamento
-}
+    revalidatePath("/barbershops/[id]");
+    revalidatePath("/bookings");
+};

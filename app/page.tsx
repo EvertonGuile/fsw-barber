@@ -12,6 +12,8 @@ import SearchBar from "./_components/search";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./_lib/auth";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const Home = async () => {
 
@@ -42,6 +44,10 @@ const Home = async () => {
   })
   : [];
 
+  // ChatGPT para retornar mês com primeira letra maiúscula
+  function capitalize(text: string) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+  };
 
   return (
     <div>
@@ -50,8 +56,9 @@ const Home = async () => {
       <div className="p-5">
         {/* BOAS VINDAS / UserGreeting */}
         <div>
-          <h2 className="text-xl font-bold">Olá, <span className="text-[#8162FF]">convidado</span>. Seja bem vindo!</h2>
-          <p>Domingo, 08 de fevereiro.</p>
+          <h2 className="text-xl font-bold">Olá, {session?.user ? <span className="text-[#8162FF]">{session.user.name?.split(" ")[0]}</span> : <span className="text-[#8162FF]">convidado</span>}. Seja bem vindo!</h2>
+          <p>{capitalize(format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR }))}.</p>
+          {/* <p>{format(new Date(), "iiii, dd 'de' MMMM", { locale: ptBR })}.</p> */}
         </div>
 
         {/* BUSCA / SEARCH */}
@@ -119,13 +126,16 @@ const Home = async () => {
 
         {/* AGENDAMENTOS / APPOINTMENS */}
           <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">Agendamentos</h2>
+        {/* <div className="flex overflow-x-auto gap-3"> */}
         <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
 
           
           {/* <BookingItem /> */}
 
           {confirmedBookings.map((booking) => (
-            <BookingItem key={booking.id} booking={booking} />
+            <div key={booking.id} className="min-w-[70%]">
+              <BookingItem key={booking.id} booking={booking} />
+            </div>
           ))}
         </div>
 
